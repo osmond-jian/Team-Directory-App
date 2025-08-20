@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { Button } from "../../components/button";  // Adjust the path if needed
+import { Button } from "../../components/button"; 
 
 describe("Button should render and work", () => {
     //adding label onto button

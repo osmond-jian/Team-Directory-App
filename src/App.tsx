@@ -1,36 +1,99 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import {getTeamMembers} from './API/getTeamMembers'
-import {Button} from './components/button'
+import { useState } from 'react';
+import './App.css';
+import { getTeamMembers } from './API/getTeamMembers';
+import { Button } from './components/button';
 
 function App() {
-  const [searchTerm, setSearchTerm] = useState('Osmond');
-  const [property, setProperty] = useState('name');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [property, setProperty] = useState('');
+  const [teamMembers, setTeamMembers] = useState<{ name: string; role: string; email: string }[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  //search functionality
+  const handleSearch = async () => {
+    //sets loading, maybe add loading logic later or a spinner or something
+    setLoading(true);
+    //get the result from the "API"
+    const result = await getTeamMembers(searchTerm, property);
+    //set the state for the rerender
+    setTeamMembers(result);
+    //stop the loading logic like the spinner
+    setLoading(false);
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <Button label="Search" onClick={async() => {getTeamMembers(searchTerm, property)}}/>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      {/* Header Card */}
+      <header className="header-card">
+        <h1>Team Directory</h1>
+        <p>Search and filter team members by name, role, or email</p>
+      </header>
+
+      {/* Controls Area */}
+      <section className="controls">
+        <div className="controls-inputs">
+          {/* Filter buttons */}
+          <div className="filter-buttons">
+            <button onClick={() => setProperty('name')}>Name</button>
+            <button onClick={() => setProperty('role')}>Role</button>
+            <button onClick={() => setProperty('email')}>Email</button>
+          </div>
+
+          {/* Search bar */}
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+
+          {/* Submit Button */}
+          <Button label="Search" onClick={handleSearch} />
+        </div>
+      </section>
+
+      {/* Table for display */}
+      <section className="results-table">
+        {/* If loading show this: */}
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          // If Loaded show this:
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              {teamMembers.length > 0 ? (
+                teamMembers.map((member) => (
+                  <tr key={member.email}>
+                    <td>{member.name}</td>
+                    <td>{member.role}</td>
+                    <td>{member.email}</td>
+                  </tr>
+                ))
+              ) : (
+                // IF no results found show this:
+                <tr>
+                  <td colSpan={3}>No results found</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        )}
+      </section>
+
+      {/* Optional: Modal (you can implement this later) */}
+      {/* <Modal /> */}
+
+      <footer className="footer">
+      </footer>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
