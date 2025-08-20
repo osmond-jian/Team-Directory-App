@@ -1,4 +1,4 @@
-import * as database from "../../database/team_database.json"
+import database from "../../database/team_database.json"
 
 interface databaseObject {
     name:string;
@@ -6,28 +6,28 @@ interface databaseObject {
     email:string;
 }
 
-export async function getTeamMembers(searchTerm:string, property:string){
+// function that returns the database query to the front end - takes in a search term
+export async function getTeamMembers(searchTerm:string, property?:string){
     let data = database;
     if (property === "name"){
         // pick the property in the array to filter through
     }
-    await setTimeout(applySearchTerm(data, property, searchTerm), 1000)
-    return database;
-}
+    // simulates the delay for a database call
+    await new Promise<void> (resolve => setTimeout(resolve, 1000));
 
-function applySearchTerm (data:Array<databaseObject>, property:string, searchTerm:string) {
-    let names = data.map(element => element.name)
-    let roles = data.map(element => element.role)
-    let emails = data.map(element => element.email)
+    // filter function for the database.filter() to return objects that match search term
+    function filterDatabase (item:databaseObject) {
+        if (
+            item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.email.toLowerCase().includes(searchTerm.toLowerCase())
+        ) {
+            return item;
+        }
+    }
+    console.log(data);
+    const searchResult = data.filter(filterDatabase);
+    console.log(searchResult);
 
-    if (property === "name") {
-        return names.filter(searchTerm);
-    }
-    if (property === "name") {
-        return names.filter(searchTerm);
-    }
-    if (property === "name") {
-        return names.filter(searchTerm);
-    }
-
+    return searchResult;
 }

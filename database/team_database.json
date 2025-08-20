@@ -1,44 +1,48 @@
 [
     {
-        "Name": "Osmond Jian",
-        "Role": "FullStack Developer",
-        "Email": "osmond@kpmpower.com"
+        "name": "Osmond Jian",
+        "role": "FullStack Developer",
+        "email": "osmond@kpmpower.com"
     },
     {
-        "Name": "Osmond Jian",
-        "Role": "FullStack Developer",
-        "Email": "osmond@kpmpower.com"
+        "name": "John Doe",
+        "role": "Volunteer",
+        "email": "john@kpmpower.com"
     },    {
-        "Name": "Osmond Jian",
-        "Role": "FullStack Developer",
-        "Email": "osmond@kpmpower.com"
+        "name": "Katie Bolourian",
+        "role": "Senior FullStack Developer",
+        "email": "Katie@kpmpower.com"
     },    {
-        "Name": "Osmond Jian",
-        "Role": "FullStack Developer",
-        "Email": "osmond@kpmpower.com"
+        "name": "Saba Azimi",
+        "role": "Senior FullStack Developer",
+        "email": "saba@kpmpower.com"
     },    {
-        "Name": "Osmond Jian",
-        "Role": "FullStack Developer",
-        "Email": "osmond@kpmpower.com"
+        "name": "Karen Lai",
+        "role": "Chief Executive Officer",
+        "email": "karen@kpmpower.com"
     },    {
-        "Name": "Osmond Jian",
-        "Role": "FullStack Developer",
-        "Email": "osmond@kpmpower.com"
+        "name": "Peter Sie",
+        "role": "VP of Finance",
+        "email": "peter@kpmpower.com"
     },    {
-        "Name": "Osmond Jian",
-        "Role": "FullStack Developer",
-        "Email": "osmond@kpmpower.com"
+        "name": "Anesha Mohammed",
+        "role": "HR Generalist",
+        "email": "anesha@kpmpower.com"
     },    {
-        "Name": "Osmond Jian",
-        "Role": "FullStack Developer",
-        "Email": "osmond@kpmpower.com"
+        "name": "Elijah Bautista",
+        "role": "Office Manager",
+        "email": "elijah@kpmpower.com"
     },    {
-        "Name": "Osmond Jian",
-        "Role": "FullStack Developer",
-        "Email": "osmond@kpmpower.com"
+        "name": "Jim Craven",
+        "role": "Production Engineering Lead",
+        "email": "jim@kpmpower.com"
     },    {
-        "Name": "Osmond Jian",
-        "Role": "FullStack Developer",
-        "Email": "osmond@kpmpower.com"
+        "name": "Miguel Macarasig",
+        "role": "Production Supervisor",
+        "email": "miguel@kpmpower.com"
+    },    {
+        "name": "Amir Boulourian",
+        "role": "Hardware Assembler",
+        "email": "amir@kpmpower.com"
     }
 ]

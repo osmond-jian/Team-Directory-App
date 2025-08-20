@@ -6,12 +6,9 @@ import react from '@vitejs/plugin-react-swc'
 export default defineConfig({
   plugins: [react()],
   test:{
-    browser:{
-      provider:'playwright',
-      enabled:true,
-      instances: [
-        {browser:'chromium'},
-      ],
-    }
+    globals:true,
+    environment:'jsdom',
+    setupFiles:'./src/setupTests.ts',
+    include: ['src/**/*.test.{ts,tsx}'],
   },
 })

@@ -2,9 +2,12 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import {getTeamMembers} from './components/getTeamMembers'
+import {Button} from './components/button'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [searchTerm, setSearchTerm] = useState('Osmond');
+  const [property, setProperty] = useState('name');
 
   return (
     <>
@@ -18,9 +21,7 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
+        <Button label="Search" onClick={async() => {getTeamMembers(searchTerm, property)}}/>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
