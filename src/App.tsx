@@ -2,7 +2,7 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import {getTeamMembers} from './components/getTeamMembers'
+import {getTeamMembers} from './API/getTeamMembers'
 import {Button} from './components/button'
 
 function App() {

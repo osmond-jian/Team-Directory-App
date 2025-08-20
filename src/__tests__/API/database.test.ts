@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getTeamMembers } from "../components/getTeamMembers";
+import { getTeamMembers } from "../API/getTeamMembers";
 import database from "../../database/team_database.json";
 
 describe("Function should get team members from database JSON", () => {
