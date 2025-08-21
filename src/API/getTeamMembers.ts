@@ -3,7 +3,7 @@ import type {databaseObject} from "../types";
 
 // function that returns the database query to the front end - takes in a search term
 export async function getTeamMembers(searchTerm:string, property?:string){
-    let data = database;
+    const data = database;
 
     // simulates the delay for a database call
     await new Promise<void> (resolve => setTimeout(resolve, 1000));

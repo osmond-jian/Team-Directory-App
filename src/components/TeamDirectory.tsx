@@ -11,7 +11,7 @@ export function TeamDirectory() {
   //this keeps track of any specific property to search for (e.g. name, role, or email)
   const [property, setProperty] = useState('');
   //this is the team members found by the search
-  const [teamMembers, setTeamMembers] = useState<{ name: string; role: string; email: string }[]>([]);
+  const [teamMembers, setTeamMembers] = useState<{ name: string; role: string; email: string; picture:string; bio:string }[]>([]);
   //this state keeps track of whether the search is loading or not; displays intermediary states like loading spinners
   const [loading, setLoading] = useState(false);
 

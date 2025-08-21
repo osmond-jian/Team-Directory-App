@@ -9,15 +9,17 @@ describe("Modal should render and work", () => {
         {
             name:'Osmond Test',
             role:'tester',
-            email:'osmond@test.com'
+            email:'osmond@test.com',
+            picture:'',
+            bio:''
         };
     // Mocking the onclick function for the button
     const mockOnClick = vi.fn();
     // Get the button element by its text content (label)
-  it('should render and display the correct button label', () => {
+  it('should render and display the correct label', () => {
 
     // Render the Button component with the label prop and the mock onClick function
-    render(<Modal teamMember={teamMember} />);
+    render(<Modal teamMember={teamMember} modalState={true} typeOfModal={"profile"} />);
 
     const modalElement = screen.getByText('Osmond Test');  //sees if the name is correctly rendered
     // Assert that the button is in the document and displays the correct label
@@ -29,7 +31,7 @@ describe("Modal should render and work", () => {
   it('should close when the close button is pressed', () => {
 
     // Render the Button component with the mock onClick function
-    render(<Modal teamMember={teamMember} />);
+    render(<Modal teamMember={teamMember} modalState={true} typeOfModal={"profile"}/>);
 
     const modalElement = screen.getByText('Osmond Test');  // Use the 'label' variable for flexibility
     const closeButton = screen.getByText('Close')
@@ -38,6 +40,6 @@ describe("Modal should render and work", () => {
     fireEvent.click(closeButton);
 
     // Assert that the onClick function was called once when the button is clicked
-    expect(modalElement).toHaveBeenCalledTimes(1);  // Check if it was called exactly once
+    expect(modalElement).not.toBeInTheDocument();  // Check if it was called exactly once
   });
 });
