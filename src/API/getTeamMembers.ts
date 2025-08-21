@@ -1,10 +1,5 @@
-import database from "../../database/team_database.json"
-
-interface databaseObject {
-    name:string;
-    role:string;
-    email:string;
-}
+import database from "../../database/team_database.json";
+import type {databaseObject} from "../types";
 
 // function that returns the database query to the front end - takes in a search term
 export async function getTeamMembers(searchTerm:string, property?:string){

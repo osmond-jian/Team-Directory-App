@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import { getTeamMembers } from '../API/getTeamMembers';
 import { Button } from './Button';
+import { SearchResultTable } from './Table';
 
 //This is the Team Directory Page component that the user can see to actually query and visualize the results of the team member search
 
@@ -68,41 +69,7 @@ export function TeamDirectory() {
             <Button label="Search" onClick={handleSearch} selected={false} />
             </div>
         </section>
-
-        {/* Table for display */}
-        <section className="results-table">
-            {/* If loading show this: */}
-            {loading ? (
-            <p>Loading...</p>
-            ) : (
-            // If Loaded show this:
-            <table>
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Role</th>
-                    <th>Email</th>
-                </tr>
-                </thead>
-                <tbody>
-                {teamMembers.length > 0 ? (
-                    teamMembers.map((member) => (
-                    <tr key={member.email}>
-                        <td>{member.name}</td>
-                        <td>{member.role}</td>
-                        <td>{member.email}</td>
-                    </tr>
-                    ))
-                ) : (
-                    // IF no results found show this:
-                    <tr>
-                    <td colSpan={3}>No results found</td>
-                    </tr>
-                )}
-                </tbody>
-            </table>
-            )}
-        </section>
+        <SearchResultTable teamMembers={teamMembers} loading={loading}/>
         </>
 
     )
