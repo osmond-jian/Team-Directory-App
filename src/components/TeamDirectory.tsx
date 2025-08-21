@@ -1,15 +1,21 @@
 import {useState} from 'react';
 import { getTeamMembers } from '../API/getTeamMembers';
-import { Button } from './button';
+import { Button } from './Button';
+
+//This is the Team Directory Page component that the user can see to actually query and visualize the results of the team member search
 
 export function TeamDirectory() {
+  //this keeps track of the search term in the search bar
   const [searchTerm, setSearchTerm] = useState('');
+  //this keeps track of any specific property to search for (e.g. name, role, or email)
   const [property, setProperty] = useState('');
+  //this is the team members found by the search
   const [teamMembers, setTeamMembers] = useState<{ name: string; role: string; email: string }[]>([]);
+  //this state keeps track of whether the search is loading or not; displays intermediary states like loading spinners
   const [loading, setLoading] = useState(false);
 
-//search functionality
-  const handleSearch = async () => {
+  //search functionality
+  async function handleSearch() {
     //sets loading, maybe add loading logic later or a spinner or something
     setLoading(true);
     //get the result from the "API"
@@ -19,6 +25,19 @@ export function TeamDirectory() {
     //stop the loading logic like the spinner
     setLoading(false);
   };
+
+  //enables property-specific filtering for the search
+  function handleSearchFilter(label:string) {
+    //if property is already set, unselect it and set state to empty string
+    if (property){
+        setProperty('');
+        return;
+    }
+    //if property is empty string, add the label to the property
+    setProperty(label);
+
+  }
+  
     return(
         <>
         {/* Header Card */}
@@ -32,9 +51,9 @@ export function TeamDirectory() {
             <div className="controls-inputs">
             {/* Filter buttons */}
             <div className="filter-buttons">
-                <button onClick={() => setProperty('name')}>Name</button>
-                <button onClick={() => setProperty('role')}>Role</button>
-                <button onClick={() => setProperty('email')}>Email</button>
+                <Button label="name" onClick={()=>handleSearchFilter("name")} selected={property==='name'? true : false} />
+                <Button label="role" onClick={()=>handleSearchFilter("role")} selected={property==='role'? true : false}  />
+                <Button label="email" onClick={()=>handleSearchFilter("email")} selected={property==='email'? true : false} />
             </div>
 
             {/* Search bar */}
@@ -46,7 +65,7 @@ export function TeamDirectory() {
             />
 
             {/* Submit Button */}
-            <Button label="Search" onClick={handleSearch} />
+            <Button label="Search" onClick={handleSearch} selected={false} />
             </div>
         </section>
 
