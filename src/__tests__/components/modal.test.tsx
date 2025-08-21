@@ -19,7 +19,7 @@ describe("Modal should render and work", () => {
   it('should render and display the correct label', () => {
 
     // Render the Button component with the label prop and the mock onClick function
-    render(<Modal teamMember={teamMember} modalState={true} typeOfModal={"profile"} />);
+    render(<Modal teamMember={teamMember} modalState={true} closeModalState={mockOnClick}/>);
 
     const modalElement = screen.getByText('Osmond Test');  //sees if the name is correctly rendered
     // Assert that the button is in the document and displays the correct label
@@ -28,18 +28,68 @@ describe("Modal should render and work", () => {
     expect(modalElement).toHaveTextContent('osmond@test.com');
   });
 
-  it('should close when the close button is pressed', () => {
+    it('should call closeModalState when the close button is pressed', () => {
+    //mock the closeModal function
+    const closeModalStateMock = jest.fn();
 
-    // Render the Button component with the mock onClick function
-    render(<Modal teamMember={teamMember} modalState={true} typeOfModal={"profile"}/>);
+    render(
+        <Modal
+        teamMember={teamMember}
+        modalState={true}
+        closeModalState={closeModalStateMock}
+        />
+    );
 
-    const modalElement = screen.getByText('Osmond Test');  // Use the 'label' variable for flexibility
-    const closeButton = screen.getByText('Close')
+    const closeButton = screen.getByText('Close');
 
-    // Fire a click event on the button
+    // Click the close button
     fireEvent.click(closeButton);
 
-    // Assert that the onClick function was called once when the button is clicked
-    expect(modalElement).not.toBeInTheDocument();  // Check if it was called exactly once
+    // Assert closeModalState callback was called once
+    expect(closeModalStateMock).toHaveBeenCalledTimes(1);
+    });
+});
+
+
+describe('Modal edit functionality', () => {
+        const teamMember =
+        {
+            name:'Osmond Test',
+            role:'tester',
+            email:'osmond@test.com',
+            picture:'',
+            bio:''
+        };
+  const closeModalMock = jest.fn();
+
+  beforeEach(() => {
+    closeModalMock.mockClear();
+  });
+
+  it('should toggle edit mode, update input, and save changes', () => {
+    render(<Modal teamMember={teamMember} modalState={true} closeModalState={closeModalMock} />);
+
+    // 1. Verify initial display (no input)
+    expect(screen.getByText('Osmond Test')).toBeInTheDocument();
+
+    // 2. Click the "Edit" button for Name field
+    const editNameButton = screen.getByRole('button', { name: 'Edit' });
+    fireEvent.click(editNameButton);
+
+    // 3. Input should appear with current value
+    const nameInput = screen.getByDisplayValue('Osmond Test');
+    expect(nameInput).toBeInTheDocument();
+
+    // 4. Change the input value
+    fireEvent.change(nameInput, { target: { value: 'New Name' } });
+    expect(nameInput).toHaveValue('New Name');
+
+    // 5. Click the "Finish" button (the same button toggles label)
+    const finishButton = screen.getByRole('button', { name: 'Finish' });
+    fireEvent.click(finishButton);
+
+    // 6. Input should disappear and new text should show
+    expect(screen.queryByDisplayValue('New Name')).not.toBeInTheDocument();
+    expect(screen.getByText('New Name')).toBeInTheDocument();
   });
 });

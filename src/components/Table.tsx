@@ -8,17 +8,17 @@ import {Modal} from './Modal'
 type TableProps = {
   teamMembers: Array<databaseObject>;
   loading:boolean;
-//   onClick: () => void;
 };
 
 export const SearchResultTable: React.FC<TableProps> = ({teamMembers, loading}) => {
     const [modal, setModal] = useState(false);
     const [selectedTeamMember, setSelectedTeamMember] = useState({name:'', role:'', email:'', picture:'', bio:''});
 
-    function showModal(modalType:string, selectedMember:databaseObject){
+    function showModal(selectedMember:databaseObject){
         setModal(true);
         setSelectedTeamMember(selectedMember);
     }
+
     return(
         <>
         {/* Table for display */}
@@ -43,8 +43,8 @@ export const SearchResultTable: React.FC<TableProps> = ({teamMembers, loading}) 
                         <td>{member.name}</td>
                         <td>{member.role}</td>
                         <td>{member.email}</td>
-                        <td><Button label={"Edit"} onClick={()=>showModal("edit", member)} selected={false}/></td>
-                        <td><Button label={"See More"} onClick={()=>showModal("profile", member)} selected={false}/></td>
+                        <td><Button label={"Edit"} onClick={()=>showModal(member)} selected={false}/></td>
+                        <td><Button label={"See More"} onClick={()=>showModal(member)} selected={false}/></td>
                     </tr>
                     ))
                 ) : (
@@ -57,7 +57,7 @@ export const SearchResultTable: React.FC<TableProps> = ({teamMembers, loading}) 
             </table>
             )}
         </section>
-        <Modal teamMember={selectedTeamMember} modalState={modal?true:false} typeOfModal={"edit"}/>
+        <Modal teamMember={selectedTeamMember} modalState={modal?true:false} closeModalState={()=> setModal(false)} />
         </>
     )
 }

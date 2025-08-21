@@ -3,7 +3,9 @@ import type {databaseObject} from "../types";
 
 // function that returns the database query to the front end - takes in a search term
 export async function getTeamMembers(searchTerm:string, property?:string){
-    const data = database;
+    const localStorageData = localStorage.getItem('database')
+    const data = localStorageData? JSON.parse(localStorageData) : database;
+    console.log(data);
 
     // simulates the delay for a database call
     await new Promise<void> (resolve => setTimeout(resolve, 1000));
