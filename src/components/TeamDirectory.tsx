@@ -84,8 +84,8 @@ export function TeamDirectory() {
             <Button label="+ Add Member" onClick={showModal} selected={false}/>
             </div>
         </section>
-        <SearchResultTable teamMembers={teamMembers} loading={loading}/>
-        <Modal teamMember={{name:"", role:"", email:"", picture:"", bio:""}} modalState={modal?true:false} closeModalState={()=> setModal(false)} />
+        <SearchResultTable teamMembers={teamMembers} loading={loading} handleSearchRefresh={handleSearch}/>
+        <Modal teamMember={{name:"", role:"", email:"", picture:"", bio:""}} modalState={modal?true:false} closeModalState={()=> setModal(false)} handleSearchRefresh={handleSearch} />
         </>
 
     )

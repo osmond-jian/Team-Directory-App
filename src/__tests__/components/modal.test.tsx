@@ -1,6 +1,12 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { Modal } from '../../components/Modal'; 
+import { editTeamMembers } from '../../API/updateLocalStorageDatabase';
+
+vi.mock('../../API/updateLocalStorageDatabase', () => ({
+  editTeamMembers: vi.fn(),
+  addTeamMember: vi.fn(),
+}));
 
 beforeAll(() => {
   // Polyfill the dialog element methods
@@ -24,14 +30,18 @@ describe("Modal should render and work", () => {
   it('should render and display the correct label', () => {
 
     // Render the Button component with the label prop and the mock onClick function
-    render(<Modal teamMember={teamMember} modalState={true} closeModalState={mockOnClick}/>);
+    render(<Modal teamMember={teamMember} modalState={true} closeModalState={mockOnClick} handleSearchRefresh={mockOnClick}/>);
 
     const modalElement = screen.getByTestId('modaltest');
     expect(modalElement).toBeInTheDocument(); //sees if the name is correctly rendered
     // Assert that the button is in the document and displays the correct label
     expect(modalElement).toBeInTheDocument();
-    expect(modalElement).toHaveTextContent('tester'); //sees if role is displayed properly
-    expect(modalElement).toHaveTextContent('osmond@test.com');
+    const nameInput = screen.getByDisplayValue('Osmond Test');
+    expect(nameInput).toBeInTheDocument();
+    const roleInput = screen.getByDisplayValue('tester');
+    expect(roleInput).toBeInTheDocument();
+    const emailInput = screen.getByDisplayValue('osmond@test.com');
+    expect(emailInput).toBeInTheDocument();
   });
 
     it('should call closeModalState when the close button is pressed', () => {
@@ -43,10 +53,11 @@ describe("Modal should render and work", () => {
         teamMember={teamMember}
         modalState={true}
         closeModalState={closeModalStateMock}
+        handleSearchRefresh={mockOnClick}
         />
     );
 
-    const closeButton = screen.getByText('Close');
+    const closeButton = screen.getByText('Cancel');
 
     // Click the close button
     fireEvent.click(closeButton);
@@ -72,30 +83,33 @@ describe('Modal edit functionality', () => {
     closeModalMock.mockClear();
   });
 
-  it('should toggle edit mode, update input, and save changes', () => {
-    render(<Modal teamMember={teamMember} modalState={true} closeModalState={closeModalMock} />);
 
-    // 1. Verify initial display (no input)
-    expect(screen.getByText('Osmond Test')).toBeInTheDocument();
+  it('should update name input and submit changes', () => {
+    render(
+      <Modal
+        teamMember={teamMember}
+        modalState={true}
+        closeModalState={closeModalMock}
+        handleSearchRefresh={closeModalMock}
+      />
+    );
 
-    // 2. Click the "Edit" button for Name field
-    const nameField = screen.getByText('Name:').parentElement; // get container div of the Name field
-    const editButton = within(nameField!).getByText('Edit', { selector: 'button' });
-    fireEvent.click(editButton);
+    // 1. Find the name input and update it
+    const nameInput = screen.getByLabelText(/name:/i); // Better than getByDisplayValue
+    expect(nameInput).toHaveValue('Osmond Test');
 
-    // 3. Input should appear with current value
-    const nameInput = screen.getByDisplayValue('Osmond Test');
-    expect(nameInput).toBeInTheDocument();
-
-    // 4. Change the input value
     fireEvent.change(nameInput, { target: { value: 'New Name' } });
     expect(nameInput).toHaveValue('New Name');
 
-    // 5. Click the "Finish" button (the same button toggles label)
-    fireEvent.click(editButton);
+    // 2. Submit the form
+    // const form = screen.getByTestId('modalform'); // Add data-testid="modal-form" to the form
+    const form = screen.getByTestId('modalform');
+    fireEvent.submit(form); // ✅ This triggers the `handleSubmit` function
 
-    // 6. Input should disappear and new text should show
-    expect(screen.queryByDisplayValue('New Name')).not.toBeInTheDocument();
-    expect(screen.getByText('New Name')).toBeInTheDocument();
+    // Now assert that internal update logic is triggered
+    expect(editTeamMembers).toHaveBeenCalledWith(
+      expect.objectContaining({ email: 'osmond@test.com' }), // original
+      expect.objectContaining({ name: 'New Name' }) // updated
+    );
   });
 });

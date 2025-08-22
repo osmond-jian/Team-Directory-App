@@ -1,49 +1,19 @@
-import React, {useState} from 'react';
-import type {databaseObject} from '../types';
-import {Button} from './Button';
-import {Modal} from './Modal'
+// Profile.tsx
+import { useParams } from 'react-router';
+import { TeamMemberProfile } from '../components/MemberProfile';
+import type { databaseObject } from '../types';
 
-//component displays team member profile, navigate here via react-router
+//Profile component - wraps the TeamMemberProfile component so I can pass a prop into it while rendering (complicated to do it via react-router)
+export function Profile() {
+  const { email } = useParams<{ email: string }>();
 
-type TableProps = {
-  teamMember: databaseObject;
-  loading:boolean;
-};
+  const database: databaseObject[] = JSON.parse(localStorage.getItem("database") || "[]");
+  const teamMember = database.find((member) => member.email === email);
 
-export const teamMemberProfile: React.FC<TableProps> = ({teamMember, loading}) => {
-    const [modal, setModal] = useState(false);
-    const [selectedTeamMember, setSelectedTeamMember] = useState({name:'', role:'', email:'', picture:'', bio:''});
+  //Added in case user tries to access a user that does not exist
+  if (!teamMember) {
+    return <div>Team member not found</div>;
+  }
 
-    function showModal(selectedMember:databaseObject){
-        setModal(true);
-        setSelectedTeamMember(selectedMember);
-    }
-
-    return(
-        <>
-            <div className="modal-content">
-            {/* Picture (if present) */}
-            <div className="modal-image">
-            {teamMember.picture ? (
-                <img src={teamMember.picture} alt={`${teamMember.name}'s profile`} />
-            ) : (
-                <div className="image-placeholder">No Image</div>
-            )}
-            </div>
-
-            {/* Text Information */}
-            <div className="modal-info">
-            <h2>{teamMember.name}</h2>
-            <p><strong>Role:</strong> {teamMember.role}</p>
-            <p><strong>Email:</strong> {teamMember.email}</p>
-
-            {/* Bio section (optional) */}
-            <div className="modal-bio">
-                <h3>Bio</h3>
-                <p>{teamMember.bio || 'No bio available.'}</p>
-            </div>
-            </div>
-        </div>
-        </>
-    )
+  return <TeamMemberProfile teamMember={teamMember} />;
 }

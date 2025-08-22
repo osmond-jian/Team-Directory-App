@@ -3,15 +3,17 @@ import type {databaseObject} from '../types';
 import {Button} from './Button';
 import {Modal} from './Modal';
 import { deleteTeamMember } from '../API/updateLocalStorageDatabase'
+import { Link } from 'react-router';
 
 //component displays table that shows search results; takes in a teamMembers prop (array) and a loading prop (controls visual loading state)
 
 type TableProps = {
   teamMembers: Array<databaseObject>;
   loading:boolean;
+  handleSearchRefresh:() => void;
 };
 
-export const SearchResultTable: React.FC<TableProps> = ({teamMembers, loading}) => {
+export const SearchResultTable: React.FC<TableProps> = ({teamMembers, loading, handleSearchRefresh}) => {
     const [modal, setModal] = useState(false);
     const [selectedTeamMember, setSelectedTeamMember] = useState({name:'', role:'', email:'', picture:'', bio:''});
 
@@ -45,8 +47,11 @@ export const SearchResultTable: React.FC<TableProps> = ({teamMembers, loading}) 
                         <td>{member.role}</td>
                         <td>{member.email}</td>
                         <td><Button label={"Edit"} onClick={()=>showModal(member)} selected={false}/></td>
-                        <td><Button label={"See More"} onClick={()=>showModal(member)} selected={false}/></td>
-                        <td><Button label={"Delete"} onClick={()=>deleteTeamMember(member)} selected={false}/></td>
+                        <td><Button label={"Delete"} onClick={()=>{
+                            deleteTeamMember(member);
+                            handleSearchRefresh();
+                            }} selected={false}/></td>
+                        <td><Link to={`/profile/${member.email}`}> See More</Link></td>
                     </tr>
                     ))
                 ) : (
@@ -59,7 +64,7 @@ export const SearchResultTable: React.FC<TableProps> = ({teamMembers, loading}) 
             </table>
             )}
         </section>
-        <Modal teamMember={selectedTeamMember} modalState={modal?true:false} closeModalState={()=> setModal(false)} />
+        <Modal teamMember={selectedTeamMember} modalState={modal?true:false} closeModalState={()=> setModal(false)} handleSearchRefresh={handleSearchRefresh} />
         </>
     )
 }

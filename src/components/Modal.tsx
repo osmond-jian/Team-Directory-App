@@ -1,47 +1,29 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { Button } from './Button';
 import type { databaseObject } from '../types';
-import {editTeamMembers, addTeamMember, deleteTeamMember} from '../API/updateLocalStorageDatabase'
+import { editTeamMembers, addTeamMember } from '../API/updateLocalStorageDatabase';
 
 type ModalProps = {
   teamMember: databaseObject;
   modalState: boolean;
   closeModalState: () => void;
+  handleSearchRefresh: () => void;
 };
 
-export const Modal: React.FC<ModalProps> = ({ modalState, teamMember, closeModalState }) => {
+//modal element is a form to allow easy input and submission of data 
+export const Modal: React.FC<ModalProps> = ({ modalState, teamMember, closeModalState, handleSearchRefresh }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
-
   const [editedTeamMember, setEditedTeamMember] = useState<databaseObject>(teamMember);
-  const [editingField, setEditingField] = useState<null | keyof databaseObject>(null);
-  const originalTeamMember = useMemo(() => {
-    return { ...teamMember };
-  }, [teamMember]);
-  //VARIABLE to keep track of whether modal is used to edit team member or add new
-  const modalMode = teamMember.email.length>0? "Edit":"Add";
-  //function to handle button and keyboard interaction with data editing
-  function handleSubmitModal(inputMethod:string){
-    if (modalMode === "Edit"){
-      if (inputMethod === "Key"){
-        setEditedTeamMember(teamMember);      
-      }
-        setEditingField(null);
-        editTeamMembers(originalTeamMember, editedTeamMember);
-        return;  
-    }
 
-    if (modalMode === "Add"){
-      addTeamMember(editedTeamMember);
-    }
-  }
+  const originalTeamMember = useMemo(() => ({ ...teamMember }), [teamMember]);
+  const modalMode = teamMember.email.length > 0 ? "Edit" : "Add";
 
-  //useEffect to keep track of edited state
+  // Reset the form fields when the modal opens to prevent previous fields from showing
   useEffect(() => {
     setEditedTeamMember(teamMember);
-    setEditingField(null);
   }, [teamMember]);
 
-  //useEffect to open/close dialogs
+  // Open/close dialog programmatically; not sure if this is the best way to do it with dialogs
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
@@ -59,11 +41,33 @@ export const Modal: React.FC<ModalProps> = ({ modalState, teamMember, closeModal
     closeModalState();
   };
 
+  //form submission - easiest way to add validation for creating new teammember (forcing them to have name, email, role)
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const { name, email, role } = editedTeamMember;
+
+    // Validation - some logic uses these terms to search so adding a member without these three will lead to bugs
+    if (!name.trim() || !email.trim() || !role.trim()) {
+      alert("Please fill in Name, Email, and Role.");
+      return;
+    }
+
+    if (modalMode === "Edit") {
+      editTeamMembers(originalTeamMember, editedTeamMember);
+    } else {
+      addTeamMember(editedTeamMember);
+    }
+
+    handleSearchRefresh();
+    closeModal();
+  };
+
   return (
-    // practice using dialog elements with react
     <dialog ref={dialogRef} className="team-modal" data-testid="modaltest">
-      <div className="modal-content">
-        <h2>{teamMember.email.length >0 ? "Edit" : "Add New Member"}</h2>
+      <form className="modal-content" onSubmit={handleSubmit} data-testid="modalform">
+        <h2>{modalMode === "Edit" ? "Edit Team Member" : "Add New Member"}</h2>
+
         <div className="modal-image">
           {editedTeamMember.picture ? (
             <img src={editedTeamMember.picture} alt={`${editedTeamMember.name}'s profile`} />
@@ -75,121 +79,60 @@ export const Modal: React.FC<ModalProps> = ({ modalState, teamMember, closeModal
         <div className="modal-info">
           {/* Name Field */}
           <div className="editable-field">
-            <strong>Name:</strong>{' '}
-            {editingField === 'name' ? (
-              <input
-                type="text"
-                value={editedTeamMember.name}
-                autoFocus
-                onChange={(e) => setEditedTeamMember({ ...editedTeamMember, name: e.target.value })}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleSubmitModal("Button");
-                  if (e.key === 'Escape') {
-                    handleSubmitModal("Key");
-                  }
-                }}
-              />
-            ) : (
-              <span>{editedTeamMember.name || 'No info'}</span>
-            )}
-            <Button
-              label={editingField === 'name' ? 'Finish' : 'Edit'}
-              selected={editingField === 'name'}
-              onClick={() => {
-                setEditingField(editingField==='name'? null:'name');
-                handleSubmitModal("Button");
-              }}
+            <label htmlFor="nameInput"><strong>Name:</strong></label>
+            <input
+              type="text"
+              value={editedTeamMember.name}
+              onChange={(e) => setEditedTeamMember({ ...editedTeamMember, name: e.target.value })}
+              required
+              autoFocus
+              id="nameInput"
             />
           </div>
 
           {/* Role Field */}
           <div className="editable-field">
-            <strong>Role:</strong>{' '}
-            {editingField === 'role' ? (
-              <input
-                type="text"
-                value={editedTeamMember.role}
-                autoFocus
-                onChange={(e) => setEditedTeamMember({ ...editedTeamMember, role: e.target.value })}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleSubmitModal("Button");
-                  if (e.key === 'Escape') {
-                    handleSubmitModal("Key")
-                  }
-                }}
-              />
-            ) : (
-              <span>{editedTeamMember.role || 'No info'}</span>
-            )}
-            <Button
-              label={editingField === 'role' ? 'Finish' : 'Edit'}
-              selected={editingField === 'role'}
-              onClick={() => {
-                handleSubmitModal("Button")
-              }}
+            <label htmlFor="roleInput"><strong>Role:</strong></label>
+            <input
+              id="roleInput"
+              type="text"
+              value={editedTeamMember.role}
+              onChange={(e) => setEditedTeamMember({ ...editedTeamMember, role: e.target.value })}
             />
           </div>
 
           {/* Email Field */}
           <div className="editable-field">
-            <strong>Email:</strong>{' '}
-            {editingField === 'email' ? (
-              <input
-                type="text"
-                value={editedTeamMember.email}
-                autoFocus
-                onChange={(e) => setEditedTeamMember({ ...editedTeamMember, email: e.target.value })}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleSubmitModal("Button");
-                  if (e.key === 'Escape') {
-                    handleSubmitModal("Key")
-                  }
-                }}
-              />
-            ) : (
-              <span>{editedTeamMember.email || 'No info'}</span>
-            )}
-            <Button
-              label={editingField === 'email' ? 'Finish' : 'Edit'}
-              selected={editingField === 'email'}
-              onClick={() => {
-                handleSubmitModal("Button")
-              }}
+            <label htmlFor="emailInput"><strong>Email:</strong></label>
+            <input
+              id="emailInput"
+              type="email"
+              value={editedTeamMember.email}
+              onChange={(e) => setEditedTeamMember({ ...editedTeamMember, email: e.target.value })}
+              required
             />
           </div>
 
           {/* Bio Field */}
           <div className="editable-field">
-            <strong>Bio:</strong>{' '}
-            {editingField === 'bio' ? (
-              <textarea
-                value={editedTeamMember.bio}
-                autoFocus
-                onChange={(e) => setEditedTeamMember({ ...editedTeamMember, bio: e.target.value })}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleSubmitModal("Button");
-                  if (e.key === 'Escape') {
-                    handleSubmitModal("Key")
-                  }
-                }}
-              />
-            ) : (
-              <span>{editedTeamMember.bio || 'No bio available.'}</span>
-            )}
-            <Button
-              label={editingField === 'bio' ? 'Finish' : 'Edit'}
-              selected={editingField === 'bio'}
-              onClick={() => {
-                handleSubmitModal("Button")
-              }}
+            <label htmlFor="bioInput"><strong>Bio:</strong></label>
+            <textarea
+              id="bioInput"
+              value={editedTeamMember.bio}
+              onChange={(e) => setEditedTeamMember({ ...editedTeamMember, bio: e.target.value })}
+              required
             />
           </div>
         </div>
-      </div>
 
-      <div className="modal-actions">
-        <Button label="Close" onClick={closeModal} selected={false} />
-      </div>
+        <div className="modal-actions">
+          <Button label="Cancel" onClick={closeModal} selected={false} />
+          {/* Used a regular button to preserve the form submit functionality */}
+          <button type="submit">
+            {modalMode === "Edit" ? "Save Changes" : "Add Member"}
+          </button>
+        </div>
+      </form>
     </dialog>
   );
 };
