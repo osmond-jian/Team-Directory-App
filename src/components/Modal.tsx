@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { Button } from './Button';
 import type { databaseObject } from '../types';
 import { editTeamMembers, addTeamMember } from '../API/updateLocalStorageDatabase';
+import "./Modal.scss"
 
 type ModalProps = {
   teamMember: databaseObject;
