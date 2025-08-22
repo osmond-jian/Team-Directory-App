@@ -6,7 +6,7 @@ export async function editTeamMembers(databaseObject:databaseObject, newDatabase
     //find the item in array to edit
     const rawData = localStorage.getItem('database') || database.toString();
     const data:databaseObject[] = rawData ? JSON.parse(rawData) : database;
-    const editIndex = data.findIndex((targetObject) => targetObject === databaseObject);
+    const editIndex = data.findIndex((targetObject) => targetObject.email === databaseObject.email);
 
     //make the edit
     const editedDatabase = data.splice(editIndex, 1, newDatabaseObject)
@@ -33,7 +33,7 @@ export async function deleteTeamMember(databaseObject:databaseObject){
     //find the item in array to edit
     const rawData = localStorage.getItem('database') || JSON.stringify(database);
     const data:databaseObject[] = rawData ? JSON.parse(rawData) : database;
-    const editIndex = data.findIndex(targetObject => targetObject === databaseObject);
+    const editIndex = data.findIndex(targetObject => targetObject.email === databaseObject.email);
 
     //make the edit
     const editedDatabase = data.splice(editIndex, 1)

@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { Button } from './Button';
 import type { databaseObject } from '../types';
+import {editTeamMembers, addTeamMember, deleteTeamMember} from '../API/updateLocalStorageDatabase'
 
 type ModalProps = {
   teamMember: databaseObject;
@@ -13,12 +14,34 @@ export const Modal: React.FC<ModalProps> = ({ modalState, teamMember, closeModal
 
   const [editedTeamMember, setEditedTeamMember] = useState<databaseObject>(teamMember);
   const [editingField, setEditingField] = useState<null | keyof databaseObject>(null);
+  const originalTeamMember = useMemo(() => {
+    return { ...teamMember };
+  }, [teamMember]);
+  //VARIABLE to keep track of whether modal is used to edit team member or add new
+  const modalMode = teamMember.email.length>0? "Edit":"Add";
+  //function to handle button and keyboard interaction with data editing
+  function handleSubmitModal(inputMethod:string){
+    if (modalMode === "Edit"){
+      if (inputMethod === "Key"){
+        setEditedTeamMember(teamMember);      
+      }
+        setEditingField(null);
+        editTeamMembers(originalTeamMember, editedTeamMember);
+        return;  
+    }
 
+    if (modalMode === "Add"){
+      addTeamMember(editedTeamMember);
+    }
+  }
+
+  //useEffect to keep track of edited state
   useEffect(() => {
     setEditedTeamMember(teamMember);
     setEditingField(null);
   }, [teamMember]);
 
+  //useEffect to open/close dialogs
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
@@ -37,8 +60,10 @@ export const Modal: React.FC<ModalProps> = ({ modalState, teamMember, closeModal
   };
 
   return (
-    <dialog ref={dialogRef} className="team-modal">
+    // practice using dialog elements with react
+    <dialog ref={dialogRef} className="team-modal" data-testid="modaltest">
       <div className="modal-content">
+        <h2>{teamMember.email.length >0 ? "Edit" : "Add New Member"}</h2>
         <div className="modal-image">
           {editedTeamMember.picture ? (
             <img src={editedTeamMember.picture} alt={`${editedTeamMember.name}'s profile`} />
@@ -57,12 +82,10 @@ export const Modal: React.FC<ModalProps> = ({ modalState, teamMember, closeModal
                 value={editedTeamMember.name}
                 autoFocus
                 onChange={(e) => setEditedTeamMember({ ...editedTeamMember, name: e.target.value })}
-                onBlur={() => setTimeout(() => setEditingField(null), 0)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') setEditingField(null);
+                  if (e.key === 'Enter') handleSubmitModal("Button");
                   if (e.key === 'Escape') {
-                    setEditedTeamMember(teamMember);
-                    setEditingField(null);
+                    handleSubmitModal("Key");
                   }
                 }}
               />
@@ -72,7 +95,10 @@ export const Modal: React.FC<ModalProps> = ({ modalState, teamMember, closeModal
             <Button
               label={editingField === 'name' ? 'Finish' : 'Edit'}
               selected={editingField === 'name'}
-              onClick={() => setEditingField(editingField==='name'? null:'name')}
+              onClick={() => {
+                setEditingField(editingField==='name'? null:'name');
+                handleSubmitModal("Button");
+              }}
             />
           </div>
 
@@ -85,12 +111,10 @@ export const Modal: React.FC<ModalProps> = ({ modalState, teamMember, closeModal
                 value={editedTeamMember.role}
                 autoFocus
                 onChange={(e) => setEditedTeamMember({ ...editedTeamMember, role: e.target.value })}
-                onBlur={() => setTimeout(() => setEditingField(null), 0)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') setEditingField(null);
+                  if (e.key === 'Enter') handleSubmitModal("Button");
                   if (e.key === 'Escape') {
-                    setEditedTeamMember(teamMember);
-                    setEditingField(null);
+                    handleSubmitModal("Key")
                   }
                 }}
               />
@@ -100,7 +124,9 @@ export const Modal: React.FC<ModalProps> = ({ modalState, teamMember, closeModal
             <Button
               label={editingField === 'role' ? 'Finish' : 'Edit'}
               selected={editingField === 'role'}
-              onClick={() => setEditingField(editingField==='role'? null:'role')}
+              onClick={() => {
+                handleSubmitModal("Button")
+              }}
             />
           </div>
 
@@ -113,12 +139,10 @@ export const Modal: React.FC<ModalProps> = ({ modalState, teamMember, closeModal
                 value={editedTeamMember.email}
                 autoFocus
                 onChange={(e) => setEditedTeamMember({ ...editedTeamMember, email: e.target.value })}
-                onBlur={() => setTimeout(() => setEditingField(null), 0)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') setEditingField(null);
+                  if (e.key === 'Enter') handleSubmitModal("Button");
                   if (e.key === 'Escape') {
-                    setEditedTeamMember(teamMember);
-                    setEditingField(null);
+                    handleSubmitModal("Key")
                   }
                 }}
               />
@@ -128,7 +152,9 @@ export const Modal: React.FC<ModalProps> = ({ modalState, teamMember, closeModal
             <Button
               label={editingField === 'email' ? 'Finish' : 'Edit'}
               selected={editingField === 'email'}
-              onClick={() => setEditingField(editingField==='email'? null:'email')}
+              onClick={() => {
+                handleSubmitModal("Button")
+              }}
             />
           </div>
 
@@ -140,11 +166,10 @@ export const Modal: React.FC<ModalProps> = ({ modalState, teamMember, closeModal
                 value={editedTeamMember.bio}
                 autoFocus
                 onChange={(e) => setEditedTeamMember({ ...editedTeamMember, bio: e.target.value })}
-                onBlur={() => setTimeout(() => setEditingField(null), 0)}
                 onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleSubmitModal("Button");
                   if (e.key === 'Escape') {
-                    setEditedTeamMember(teamMember);
-                    setEditingField(null);
+                    handleSubmitModal("Key")
                   }
                 }}
               />
@@ -154,7 +179,9 @@ export const Modal: React.FC<ModalProps> = ({ modalState, teamMember, closeModal
             <Button
               label={editingField === 'bio' ? 'Finish' : 'Edit'}
               selected={editingField === 'bio'}
-              onClick={() => setEditingField(editingField==='bio'? null:'bio')}
+              onClick={() => {
+                handleSubmitModal("Button")
+              }}
             />
           </div>
         </div>

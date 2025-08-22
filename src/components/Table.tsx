@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import type {databaseObject} from '../types';
 import {Button} from './Button';
-import {Modal} from './Modal'
+import {Modal} from './Modal';
+import { deleteTeamMember } from '../API/updateLocalStorageDatabase'
 
 //component displays table that shows search results; takes in a teamMembers prop (array) and a loading prop (controls visual loading state)
 
@@ -45,6 +46,7 @@ export const SearchResultTable: React.FC<TableProps> = ({teamMembers, loading}) 
                         <td>{member.email}</td>
                         <td><Button label={"Edit"} onClick={()=>showModal(member)} selected={false}/></td>
                         <td><Button label={"See More"} onClick={()=>showModal(member)} selected={false}/></td>
+                        <td><Button label={"Delete"} onClick={()=>deleteTeamMember(member)} selected={false}/></td>
                     </tr>
                     ))
                 ) : (

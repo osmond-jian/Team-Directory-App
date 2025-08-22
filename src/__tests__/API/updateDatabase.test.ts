@@ -58,10 +58,12 @@ describe('editTeamMember', () => {
 
   });
     it('adds the correct team member in localStorage', async () => {
+    const preresult = await JSON.parse(localStorage.getItem('database') || '[]');
+    expect(preresult).toHaveLength(2)
     await addTeamMember(original);
 
     const result = await JSON.parse(localStorage.getItem('database') || '[]');
 
-    expect(result).toHaveLength(2);
+    expect(result).toHaveLength(3);
   });
 });

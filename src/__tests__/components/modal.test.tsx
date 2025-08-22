@@ -1,7 +1,12 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { useState } from 'react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import { Modal } from '../../components/Modal'; 
+
+beforeAll(() => {
+  // Polyfill the dialog element methods
+  HTMLDialogElement.prototype.showModal = vi.fn();
+  HTMLDialogElement.prototype.close = vi.fn();
+});
 
 describe("Modal should render and work", () => {
     //adding label onto button
@@ -21,7 +26,8 @@ describe("Modal should render and work", () => {
     // Render the Button component with the label prop and the mock onClick function
     render(<Modal teamMember={teamMember} modalState={true} closeModalState={mockOnClick}/>);
 
-    const modalElement = screen.getByText('Osmond Test');  //sees if the name is correctly rendered
+    const modalElement = screen.getByTestId('modaltest');
+    expect(modalElement).toBeInTheDocument(); //sees if the name is correctly rendered
     // Assert that the button is in the document and displays the correct label
     expect(modalElement).toBeInTheDocument();
     expect(modalElement).toHaveTextContent('tester'); //sees if role is displayed properly
@@ -30,7 +36,7 @@ describe("Modal should render and work", () => {
 
     it('should call closeModalState when the close button is pressed', () => {
     //mock the closeModal function
-    const closeModalStateMock = jest.fn();
+    const closeModalStateMock = vi.fn();
 
     render(
         <Modal
@@ -60,7 +66,7 @@ describe('Modal edit functionality', () => {
             picture:'',
             bio:''
         };
-  const closeModalMock = jest.fn();
+  const closeModalMock = vi.fn();
 
   beforeEach(() => {
     closeModalMock.mockClear();
@@ -73,8 +79,9 @@ describe('Modal edit functionality', () => {
     expect(screen.getByText('Osmond Test')).toBeInTheDocument();
 
     // 2. Click the "Edit" button for Name field
-    const editNameButton = screen.getByRole('button', { name: 'Edit' });
-    fireEvent.click(editNameButton);
+    const nameField = screen.getByText('Name:').parentElement; // get container div of the Name field
+    const editButton = within(nameField!).getByText('Edit', { selector: 'button' });
+    fireEvent.click(editButton);
 
     // 3. Input should appear with current value
     const nameInput = screen.getByDisplayValue('Osmond Test');
@@ -85,8 +92,7 @@ describe('Modal edit functionality', () => {
     expect(nameInput).toHaveValue('New Name');
 
     // 5. Click the "Finish" button (the same button toggles label)
-    const finishButton = screen.getByRole('button', { name: 'Finish' });
-    fireEvent.click(finishButton);
+    fireEvent.click(editButton);
 
     // 6. Input should disappear and new text should show
     expect(screen.queryByDisplayValue('New Name')).not.toBeInTheDocument();
