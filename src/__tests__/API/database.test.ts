@@ -15,7 +15,9 @@ describe("Function should get team members from database JSON", () => {
         [{
             name: "Osmond Jian",
             role: "FullStack Developer",
-            email: "osmond@kpmpower.com"
+            email: "osmond@kpmpower.com",
+            picture:'',
+            bio:''
         }]
     );
   });

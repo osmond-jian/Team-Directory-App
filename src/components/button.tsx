@@ -1,5 +1,6 @@
 // Button.tsx - a reusable button component that takes in a label, selected (to change appearance and classname), and prop drill function for onclick
 import React from 'react';
+import './Button.scss'
 
 type ButtonProps = {
   label: string;

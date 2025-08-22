@@ -1,0 +1,149 @@
+.profile-container {
+  padding: 2rem;
+  max-width: 900px;
+  margin: 2rem auto;
+  background-color: #121212;
+  color: #f0f0f0;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+
+  .back-button {
+    background-color: #272727;
+    color: #f0f0f0;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #444;
+    }
+  }
+
+  .profile-card {
+    display: flex;
+    gap: 2.5rem;
+    border-radius: 12px;
+    padding: 2rem;
+    background-color: #1e1e1e;
+    box-shadow: inset 0 0 15px rgba(255,255,255,0.05);
+
+    .profile-image {
+      min-width: 200px;
+
+      img {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 50%;
+        box-shadow: 0 0 12px #00bfff88;
+      }
+
+      .image-placeholder {
+        width: 200px;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #333;
+        border-radius: 50%;
+        font-size: 1rem;
+        color: #999;
+        text-align: center;
+        padding: 1rem;
+        box-shadow: 0 0 10px #555;
+      }
+    }
+
+    .profile-info {
+      flex: 1;
+
+      h2 {
+        margin-top: 0;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #00bfff;
+      }
+
+      p {
+        margin: 0.6rem 0;
+        font-size: 1.1rem;
+
+        strong {
+          color: #66d9ff;
+        }
+      }
+
+      .profile-bio {
+        margin-top: 2rem;
+
+        h3 {
+          margin-bottom: 0.6rem;
+          font-size: 1.4rem;
+          color: #88c0d0;
+        }
+
+        p {
+          margin: 0;
+          line-height: 1.5;
+          font-size: 1rem;
+          color: #ccc;
+        }
+      }
+    }
+  }
+
+  // Responsive breakpoint: stack layout on narrow screens
+  @media (max-width: 720px) {
+    padding: 1.5rem;
+
+    .back-button {
+      font-size: 1rem;
+      padding: 0.5rem 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .profile-card {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 1.5rem;
+
+      .profile-image {
+        min-width: auto;
+        margin-bottom: 1.5rem;
+
+        img, .image-placeholder {
+          width: 160px;
+          height: 160px;
+          box-shadow: 0 0 10px #00bfff88;
+        }
+      }
+
+      .profile-info {
+        h2 {
+          font-size: 1.7rem;
+        }
+
+        p {
+          font-size: 1rem;
+        }
+
+        .profile-bio {
+          h3 {
+            font-size: 1.2rem;
+          }
+
+          p {
+            font-size: 0.95rem;
+          }
+        }
+      }
+    }
+  }
+}
+

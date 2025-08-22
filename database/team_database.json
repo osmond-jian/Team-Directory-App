@@ -2,47 +2,69 @@
     {
         "name": "Osmond Jian",
         "role": "FullStack Developer",
-        "email": "osmond@kpmpower.com"
+        "email": "osmond@kpmpower.com",
+        "picture":"",
+        "bio":""
     },
     {
         "name": "John Doe",
         "role": "Volunteer",
-        "email": "john@kpmpower.com"
+        "email": "john@kpmpower.com",
+        "picture":"",
+        "bio":""
     },    {
         "name": "Katie Bolourian",
         "role": "Senior FullStack Developer",
-        "email": "Katie@kpmpower.com"
+        "email": "Katie@kpmpower.com",
+        "picture":"",
+        "bio":""
     },    {
         "name": "Saba Azimi",
         "role": "Senior FullStack Developer",
-        "email": "saba@kpmpower.com"
+        "email": "saba@kpmpower.com",
+        "picture":"",
+        "bio":""
     },    {
         "name": "Karen Lai",
         "role": "Chief Executive Officer",
-        "email": "karen@kpmpower.com"
+        "email": "karen@kpmpower.com",
+        "picture":"",
+        "bio":""
     },    {
         "name": "Peter Sie",
         "role": "VP of Finance",
-        "email": "peter@kpmpower.com"
+        "email": "peter@kpmpower.com",
+        "picture":"",
+        "bio":""
     },    {
         "name": "Anesha Mohammed",
         "role": "HR Generalist",
-        "email": "anesha@kpmpower.com"
+        "email": "anesha@kpmpower.com",
+        "picture":"",
+        "bio":""
     },    {
         "name": "Elijah Bautista",
         "role": "Office Manager",
-        "email": "elijah@kpmpower.com"
+        "email": "elijah@kpmpower.com",
+        "picture":"",
+        "bio":""
     },    {
         "name": "Jim Craven",
         "role": "Production Engineering Lead",
-        "email": "jim@kpmpower.com"
+        "email": "jim@kpmpower.com",
+        "picture":"",
+        "bio":""
     },    {
         "name": "Miguel Macarasig",
         "role": "Production Supervisor",
-        "email": "miguel@kpmpower.com"
+        "email": "miguel@kpmpower.com",
+        "picture":"",
+        "bio":""
     },    {
         "name": "Amir Boulourian",
         "role": "Hardware Assembler",
-        "email": "amir@kpmpower.com"
+        "email": "amir@kpmpower.com",
+        "picture":"",
+        "bio":""
     }
 ]
