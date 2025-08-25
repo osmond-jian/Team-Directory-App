@@ -1,11 +1,10 @@
 import type {databaseObject} from "../types";
-import database from "../../database/team_database.json";
+import { getDatabaseFromLocalStorage } from '../helpers/storageHelper';
 
 // function that updates the local storage database with the edit function in the modal
 export async function editTeamMembers(databaseObject:databaseObject, newDatabaseObject:databaseObject){
     //find the item in array to edit
-    const rawData = localStorage.getItem('database') || database.toString();
-    const data:databaseObject[] = rawData ? JSON.parse(rawData) : database;
+    const data = getDatabaseFromLocalStorage();
     const editIndex = data.findIndex((targetObject) => targetObject.email === databaseObject.email);
 
     //make the edit
@@ -18,8 +17,7 @@ export async function editTeamMembers(databaseObject:databaseObject, newDatabase
 // function that updates the local storage database with the edit function in the modal
 export async function addTeamMember(newDatabaseObject:databaseObject){
     //get database
-    const rawData = localStorage.getItem('database') || JSON.stringify(database);
-    const data = rawData ? JSON.parse(rawData) : database;
+    const data = getDatabaseFromLocalStorage();
 
     //add the team member
     const editedDatabase = data.push(newDatabaseObject)
@@ -31,8 +29,7 @@ export async function addTeamMember(newDatabaseObject:databaseObject){
 // function that updates the local storage database with the edit function in the modal
 export async function deleteTeamMember(databaseObject:databaseObject){
     //find the item in array to edit
-    const rawData = localStorage.getItem('database') || JSON.stringify(database);
-    const data:databaseObject[] = rawData ? JSON.parse(rawData) : database;
+    const data = getDatabaseFromLocalStorage();
     const editIndex = data.findIndex(targetObject => targetObject.email === databaseObject.email);
 
     //make the edit

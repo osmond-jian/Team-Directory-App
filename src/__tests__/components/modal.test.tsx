@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Modal } from '../../components/Modal'; 
-import { editTeamMembers } from '../../API/updateLocalStorageDatabase';
+import { editTeamMembers, addTeamMember } from '../../API/updateLocalStorageDatabase';
 
 vi.mock('../../API/updateLocalStorageDatabase', () => ({
   editTeamMembers: vi.fn(),
@@ -111,5 +111,120 @@ describe('Modal edit functionality', () => {
       expect.objectContaining({ email: 'osmond@test.com' }), // original
       expect.objectContaining({ name: 'New Name' }) // updated
     );
+  });
+});
+
+describe('Modal advanced functionality', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  const baseMember = {
+    name: 'Initial',
+    role: 'dev',
+    email: 'initial@example.com',
+    picture: '',
+    bio: '',
+  };
+
+  it('should reset form fields when teamMember prop changes', () => {
+    const { rerender } = render(
+      <Modal
+        teamMember={baseMember}
+        modalState={true}
+        closeModalState={() => {}}
+        handleSearchRefresh={() => {}}
+      />
+    );
+
+    expect(screen.getByDisplayValue('Initial')).toBeInTheDocument();
+
+    rerender(
+      <Modal
+        teamMember={{
+          name: 'Changed',
+          role: 'manager',
+          email: 'changed@example.com',
+          picture: '',
+          bio: '',
+        }}
+        modalState={true}
+        closeModalState={() => {}}
+        handleSearchRefresh={() => {}}
+      />
+    );
+
+    expect(screen.getByDisplayValue('Changed')).toBeInTheDocument();
+  });
+
+  it('should open and close dialog based on modalState prop', () => {
+    const closeModalStateMock = vi.fn();
+
+    // Spy BEFORE rendering so that we can test the modal before the useeffect runs
+    const showModalSpy = vi.spyOn(HTMLDialogElement.prototype, 'showModal');
+    const closeSpy = vi.spyOn(HTMLDialogElement.prototype, 'close');
+
+    const { rerender } = render(
+      <Modal
+        teamMember={baseMember}
+        modalState={false}
+        closeModalState={closeModalStateMock}
+        handleSearchRefresh={() => {}}
+      />
+    );
+
+    // Initially, modalState is false, so showModal should not be called
+    expect(showModalSpy).not.toHaveBeenCalled();
+
+    rerender(
+      <Modal
+        teamMember={baseMember}
+        modalState={true}
+        closeModalState={closeModalStateMock}
+        handleSearchRefresh={() => {}}
+      />
+    );
+
+    expect(showModalSpy).toHaveBeenCalled();
+
+    // Simulate dialog being open
+    const dialog = screen.getByTestId('modaltest').closest('dialog')!;
+    Object.defineProperty(dialog, 'open', {
+      configurable: true,
+      get: () => true,
+    });
+
+    rerender(
+      <Modal
+        teamMember={baseMember}
+        modalState={false}
+        closeModalState={closeModalStateMock}
+        handleSearchRefresh={() => {}}
+      />
+    );
+
+    expect(closeSpy).toHaveBeenCalled();
+    expect(closeModalStateMock).toHaveBeenCalled();
+  });
+
+
+  it('should show alert if required fields are missing on submit', () => {
+    const alertMock = vi.fn();
+    window.alert = alertMock;
+
+    render(
+      <Modal
+        teamMember={{ name: '', role: '', email: '', picture: '', bio: '' }}
+        modalState={true}
+        closeModalState={() => {}}
+        handleSearchRefresh={() => {}}
+      />
+    );
+
+    fireEvent.submit(screen.getByTestId('modalform'));
+
+    expect(alertMock).toHaveBeenCalledWith('Please fill in Name, Email, and Role.');
+    expect(editTeamMembers).not.toHaveBeenCalled();
+    expect(addTeamMember).not.toHaveBeenCalled();
   });
 });
